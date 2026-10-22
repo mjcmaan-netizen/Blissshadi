@@ -3,409 +3,742 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#fbf6eb">
-<title>Bliss Wedding Catalogue | Bliss Giftings</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#faf6ef">
+<title>Bliss Giftings | Wedding Collection</title>
+<meta name="description" content="Discover thoughtful wedding favours, hampers and personalised gifts for every celebration with Bliss Giftings.">
+
 <style>
-:root{--gold:#b18a45;--dark:#34281e;--cream:#fbf6eb;--line:#e5d5b5;--muted:#766b5f;--white:#fff}
-*{box-sizing:border-box}
-body{margin:0;background:var(--cream);color:var(--dark);font-family:Georgia,"Times New Roman",serif}
-button,input,select{font:inherit}
-a{color:inherit}
-header{position:sticky;top:0;z-index:5;background:#fbf6ebf5;border-bottom:1px solid var(--line);padding:15px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px}
-.logo{font-size:22px;font-weight:bold;letter-spacing:2px}
-.logo small{display:block;font:10px Arial,sans-serif;letter-spacing:4px;color:#87652f;margin-top:4px}
-nav a{font:12px Arial,sans-serif;color:#87652f;text-decoration:none;margin-left:15px}
-.hero{text-align:center;padding:76px 20px 72px;background:radial-gradient(ellipse at top,#fff 0,transparent 65%),linear-gradient(135deg,#f1e3c5,#fffaf0 65%,#e9d8b4);border-bottom:1px solid var(--line)}
-.eyebrow{text-transform:uppercase;letter-spacing:3px;color:#89672f;font:10px Arial,sans-serif}
-h1{font-size:clamp(40px,9vw,72px);line-height:1.08;font-weight:normal;margin:22px auto 15px}
-.hero p,.intro{font:15px/1.8 Arial,sans-serif;color:var(--muted);max-width:570px;margin:0 auto 25px}
-.btn{display:inline-block;background:var(--gold);color:white;border:1px solid var(--gold);border-radius:3px;padding:13px 18px;text-decoration:none;font:13px Arial,sans-serif;cursor:pointer}
-.btn.outline{background:transparent;color:#805d26}
-section{padding:48px 18px;scroll-margin-top:75px}
-.section-title{text-align:center;margin:0 auto 28px}
-h2{font-size:31px;font-weight:normal;margin:10px 0}
-h3{font-weight:normal}
-.occasion-grid,.category-grid,.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:1100px;margin:auto}
-.occasion,.category{border:1px solid var(--line);background:#fffdf8;padding:19px 10px;text-align:center;cursor:pointer;min-height:82px;color:var(--dark);transition:.15s}
-.occasion:hover,.occasion.active,.category:hover,.category.active{background:#efe0bf;border-color:var(--gold)}
-.occasion small{display:block;font:10px Arial,sans-serif;color:#87652f;letter-spacing:2px;margin-bottom:9px}
-.tools{max-width:1100px;margin:0 auto 20px;display:grid;grid-template-columns:1fr;gap:10px}
-input,select{width:100%;padding:12px;border:1px solid var(--line);background:#fffdf8;color:var(--dark);border-radius:3px}
-.products{align-items:stretch}
-.card{background:white;border:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
-.card img{width:100%;aspect-ratio:4/4.5;object-fit:cover;background:#f2eadb}
-.card-body{padding:14px;display:flex;flex-direction:column;flex:1}
-.card h3{font-size:19px;margin:0 0 9px}
-.desc,.meta{font:12px/1.65 Arial,sans-serif;color:var(--muted)}
-.prices{margin:8px 0 12px;font:14px Arial,sans-serif}
-.old{color:#82786b;text-decoration:line-through;margin-right:7px}
-.sale{font-weight:bold;color:#72501c;font-size:17px}
-.card .btn{margin-top:auto;text-align:center}
-.quantity{display:flex;gap:8px;align-items:center;margin:12px 0}
-.quantity input{width:78px}
-.panel{max-width:1100px;margin:auto}
-.hidden{display:none!important}
-.notice{max-width:900px;margin:18px auto;padding:14px;border:1px solid var(--line);background:#fffdf8;font:13px/1.7 Arial,sans-serif;color:var(--muted)}
-#cartbar{position:sticky;bottom:0;z-index:4;background:#34281ef5;color:white;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;font:13px Arial,sans-serif}
-#cartbar .btn{background:#c09b59;border-color:#c09b59}
-footer{padding:30px 20px;text-align:center;background:#34281e;color:#f8ecd3;font:12px/2 Arial,sans-serif}
-footer a{color:#efd59c}
-@media(min-width:650px){.occasion-grid,.category-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.products{grid-template-columns:repeat(3,minmax(0,1fr))}.tools{grid-template-columns:2fr 1fr}}
-@media(min-width:950px){.occasion-grid,.category-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.products{grid-template-columns:repeat(4,minmax(0,1fr))}}
+:root {
+  --gold: #a77b42;
+  --gold-dark: #805927;
+  --ink: #30251e;
+  --muted: #786d63;
+  --cream: #faf6ef;
+  --paper: #fffdf9;
+  --line: #e8ded0;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--cream);
+  font-family: Georgia, "Times New Roman", serif;
+}
+button, input { font: inherit; }
+button { cursor: pointer; }
+header {
+  padding: 23px 18px 18px;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255,253,249,.95);
+}
+.brand {
+  font-size: clamp(28px, 6vw, 43px);
+  letter-spacing: 3px;
+  color: var(--gold-dark);
+}
+.tagline {
+  margin-top: 8px;
+  font: 11px Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: var(--muted);
+}
+.hero {
+  padding: 58px 20px 48px;
+  text-align: center;
+  background: linear-gradient(140deg,#f5ead9,#fffaf2 60%,#eee0ca);
+}
+.eyebrow {
+  color: var(--gold-dark);
+  font: 11px Arial, sans-serif;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.hero h1 {
+  max-width: 750px;
+  margin: 18px auto;
+  font-size: clamp(35px, 7vw, 61px);
+  font-weight: 400;
+  line-height: 1.12;
+}
+.hero p {
+  max-width: 540px;
+  margin: auto;
+  color: var(--muted);
+  font: 15px/1.8 Arial, sans-serif;
+}
+.section {
+  max-width: 1200px;
+  margin: auto;
+  padding: 43px 18px 65px;
+}
+.section-heading {
+  margin-bottom: 28px;
+  text-align: center;
+}
+.section-heading h2 {
+  margin: 10px 0;
+  font-size: clamp(27px, 4vw, 38px);
+  font-weight: 400;
+}
+.section-heading p {
+  color: var(--muted);
+  font: 14px/1.7 Arial, sans-serif;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 13px;
+}
+.occasion {
+  min-height: 148px;
+  padding: 23px 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper);
+  text-align: center;
+  color: var(--ink);
+  transition: transform .2s, border-color .2s;
+}
+.occasion:hover {
+  transform: translateY(-3px);
+  border-color: var(--gold);
+}
+.occasion .symbol {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 29px;
+}
+.occasion .name {
+  display: block;
+  font-size: 17px;
+  line-height: 1.35;
+}
+.occasion .hint {
+  display: block;
+  margin-top: 9px;
+  font: 10px Arial, sans-serif;
+  letter-spacing: 1px;
+  color: var(--gold-dark);
+  text-transform: uppercase;
+}
+.status {
+  padding: 24px;
+  color: var(--muted);
+  font: 14px/1.7 Arial, sans-serif;
+  text-align: center;
+}
+footer {
+  padding: 30px 18px;
+  text-align: center;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--muted);
+  font: 13px/1.8 Arial, sans-serif;
+}
+footer strong { color: var(--gold-dark); }
+
+/* Collection popup */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(34,25,19,.56);
+}
+.overlay.open { display: flex; }
+.panel {
+  width: 100%;
+  max-width: 1000px;
+  max-height: 92dvh;
+  overflow-y: auto;
+  border-radius: 18px 18px 0 0;
+  background: var(--cream);
+  padding: 23px 17px 34px;
+  animation: rise .22s ease-out;
+}
+@keyframes rise {
+  from { transform: translateY(25px); opacity: .5; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.panel-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: sticky;
+  top: -23px;
+  z-index: 2;
+  margin: -23px -17px 20px;
+  padding: 15px 17px;
+  background: var(--cream);
+  border-bottom: 1px solid var(--line);
+}
+.back, .close {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 50px;
+  min-width: 43px;
+  height: 39px;
+  color: var(--ink);
+}
+.panel-title {
+  flex: 1;
+  min-width: 0;
+}
+.panel-title small {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--gold-dark);
+  font: 10px Arial, sans-serif;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.panel-title strong {
+  font-size: 21px;
+  font-weight: 400;
+}
+.panel-intro {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font: 13px/1.7 Arial, sans-serif;
+}
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px;
+}
+.category {
+  padding: 18px 12px;
+  min-height: 73px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.category::after {
+  content: "  →";
+  color: var(--gold);
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 13px;
+}
+.product {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper);
+}
+.product img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4/4.3;
+  object-fit: cover;
+  background: #eee4d7;
+}
+.product-body { padding: 12px; }
+.product h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 400;
+}
+.description {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font: 12px/1.6 Arial, sans-serif;
+}
+.prices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 7px;
+  margin-bottom: 9px;
+}
+.selling {
+  font: bold 17px Arial, sans-serif;
+  color: var(--gold-dark);
+}
+.original {
+  color: #92867b;
+  font: 12px Arial, sans-serif;
+  text-decoration: line-through;
+}
+.product-meta {
+  margin: 8px 0;
+  color: var(--muted);
+  font: 11px/1.6 Arial, sans-serif;
+}
+.order-row {
+  display: flex;
+  gap: 7px;
+  margin-top: 12px;
+}
+.qty {
+  width: 57px;
+  min-width: 0;
+  padding: 8px 4px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: white;
+}
+.add {
+  flex: 1;
+  border: 0;
+  padding: 10px 6px;
+  border-radius: 3px;
+  background: var(--gold-dark);
+  color: white;
+  font: 11px Arial, sans-serif;
+}
+.add.selected { background: #4d6948; }
+.cartbar {
+  display: none;
+  position: sticky;
+  bottom: -34px;
+  margin: 22px -17px -34px;
+  padding: 14px 17px;
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  gap: 12px;
+  align-items: center;
+}
+.cartbar.visible { display: flex; }
+.cart-summary { flex: 1; font: 12px/1.6 Arial, sans-serif; }
+.cart-summary strong { font-size: 15px; }
+.checkout {
+  padding: 13px 15px;
+  border: 0;
+  border-radius: 3px;
+  background: #286b42;
+  color: white;
+  font: 12px Arial, sans-serif;
+}
+.empty {
+  padding: 35px 15px;
+  text-align: center;
+  color: var(--muted);
+  font: 13px/1.8 Arial, sans-serif;
+  grid-column: 1/-1;
+}
+@media (min-width: 600px) {
+  .grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 18px; }
+  .category-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .product-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .overlay { align-items: center; padding: 20px; }
+  .panel { max-height: 88dvh; border-radius: 8px; padding: 25px; }
+  .panel-top { top: -25px; margin: -25px -25px 22px; padding: 15px 25px; }
+  .cartbar { bottom: -25px; margin: 22px -25px -25px; padding: 14px 25px; }
+}
+@media (min-width: 900px) {
+  .grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
+  .product-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
+}
 </style>
 </head>
 <body>
+
 <header>
-  <a href="#" style="text-decoration:none"><div class="logo">BLISS<small>WEDDING CATALOGUE</small></div></a>
-  <nav><a href="#occasions">OCCASIONS</a><a href="#products">PRODUCTS</a></nav>
+  <div class="brand">Bliss Giftings</div>
+  <div class="tagline">Thoughtfully gifted · Beautifully remembered</div>
 </header>
 
-<main>
 <section class="hero">
-  <div class="eyebrow">Bliss Giftings presents</div>
-  <h1>Celebrate Every<br>Wedding Moment</h1>
-  <p>Thoughtful gifts, beautiful details and memorable celebrations. Discover your wedding collection by occasion.</p>
-  <a class="btn" href="#occasions">Explore the Collection</a>
+  <div class="eyebrow">The Wedding Collection</div>
+  <h1>Every celebration deserves a little more magic.</h1>
+  <p>Discover thoughtful favours, keepsakes and curated gifts for every beautiful moment of your wedding journey.</p>
 </section>
 
-<section id="occasions">
-  <div class="section-title">
-    <div class="eyebrow">Find your celebration</div>
-    <h2>What occasion are you shopping for?</h2>
-    <p class="intro">Choose an occasion to discover matching products from our catalogue.</p>
+<main class="section">
+  <div class="section-heading">
+    <div class="eyebrow">Find your moment</div>
+    <h2>Shop by Occasion</h2>
+    <p>Choose your celebration to explore its collection of gifts.</p>
   </div>
-  <div id="occasionGrid" class="occasion-grid"></div>
-</section>
-
-<section id="products" class="hidden">
-  <div class="section-title">
-    <div class="eyebrow">Your selected celebration</div>
-    <h2 id="occasionTitle">Products</h2>
-    <p class="intro">Choose a category, explore products and add your selections to your WhatsApp enquiry.</p>
-  </div>
-  <div class="panel">
-    <div id="categoryGrid" class="category-grid"></div>
-    <div class="tools">
-      <input id="search" type="search" placeholder="Search products by name…" aria-label="Search products">
-      <select id="sort" aria-label="Sort products">
-        <option value="default">Recommended order</option>
-        <option value="low">Price: low to high</option>
-        <option value="high">Price: high to low</option>
-      </select>
-    </div>
-    <p id="loadStatus" class="notice">Connecting to the product catalogue…</p>
-    <div id="productGrid" class="products"></div>
-  </div>
-</section>
-
-<section id="about" style="background:#f2e8d4;text-align:center">
-  <div class="section-title">
-    <div class="eyebrow">Our promise</div>
-    <h2>Made for meaningful moments</h2>
-    <p class="intro">Browse by occasion, review product details and contact Bliss Giftings to confirm availability, shipping and your order.</p>
-    <a class="btn" href="https://wa.me/919998920644" target="_blank" rel="noopener">Contact us on WhatsApp</a>
-  </div>
-</section>
+  <div id="occasions" class="grid"></div>
+  <div id="status" class="status">Connecting to the Bliss Giftings catalogue…</div>
 </main>
 
-<div id="cartbar" class="hidden">
-  <span id="cartSummary">0 products selected</span>
-  <button class="btn" id="checkout">Send order enquiry</button>
-</div>
-
 <footer>
-  <strong>BLISS GIFTINGS</strong><br>
-  Wedding & Marriage Gifting Catalogue<br>
-  WhatsApp: <a href="https://wa.me/919998920644" target="_blank" rel="noopener">+91 99989 20644</a><br>
-  <span>Prices and availability are subject to confirmation.</span>
+  <strong>Bliss Giftings</strong><br>
+  Made with love for your most memorable moments.<br>
+  For product enquiries, connect with us on WhatsApp.
 </footer>
 
+<div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-label="Wedding gift collection">
+  <section class="panel">
+    <div class="panel-top">
+      <button class="back" id="back" aria-label="Go back" hidden>←</button>
+      <div class="panel-title">
+        <small id="step-label">Your celebration</small>
+        <strong id="panel-title">Collection</strong>
+      </div>
+      <button class="close" id="close" aria-label="Close collection">✕</button>
+    </div>
+    <p id="panel-intro" class="panel-intro"></p>
+    <div id="panel-content"></div>
+    <div id="cartbar" class="cartbar">
+      <div id="cart-summary" class="cart-summary"></div>
+      <button id="checkout" class="checkout">Enquire on WhatsApp ↗</button>
+    </div>
+  </section>
+</div>
+
 <script>
-/* ---------------------------------------------------------
-   BLISS WEDDING CATALOGUE
-   Google Sheets is the product source.
-   Image paths use the exact GitHub folder: Public/images/
----------------------------------------------------------- */
+(function () {
+  "use strict";
 
-const PUBLISHED_SHEET_URL =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vTretwKKOCok1LLbuu-K0QIRzaZLgXP784aDmFxfA6OjeFvM9Jg0J5lC10S1P3nlTyTuE4GowHEcr-a/pubhtml";
+  const FEED_URL =
+    "https://script.google.com/macros/s/AKfycbyokpUoy9eWLziirIqFF82iozpyN06f3BK6AoalLy3dL1CHrk4Rvlog0f8hlX9gVrWssQ/exec";
 
-const IMAGE_BASE = "/Public/images/";
-const WHATSAPP_NUMBER = "919998920644";
+  const WHATSAPP_NUMBER = "919998920644";
 
-const OCCASIONS = [
- "Baat Pakki",
- "Kankotri Lekhan",
- "Bachelorette",
- "Mehndi",
- "Haldi",
- "Sangeet",
- "Ganesh Puja / Mandva Muhurat / Grah Shanti",
- "Mameru",
- "Mata Ki Chowki",
- "Baraat Welcome",
- "Shaadi",
- "Nikaah",
- "Grih Pravesh",
- "Reception"
-];
+  const occasionList = [
+    ["Baat Pakki", "💍", ["Baat Pakki"]],
+    ["Kankotri Lekhan", "✉️", ["Kankotri Lekhan"]],
+    ["Bachelorette", "🥂", ["Bachelorette"]],
+    ["Mehndi", "🌿", ["Mehndi"]],
+    ["Haldi", "🌼", ["Haldi"]],
+    ["Sangeet", "🎶", ["Sangeet"]],
+    ["Ganesh Puja / Mandva Muhurat / Grah Shanti", "🪔",
+      ["Ganesh Puja", "Mandva Muhurat", "Grah Shanti"]],
+    ["Mameru", "🎁", ["Mameru"]],
+    ["Mata Ki Chowki", "🙏", ["Mata Ki Chowki"]],
+    ["Baraat Welcome", "🐎", ["Baraat Welcome"]],
+    ["Shaadi", "💐", ["Shaadi"]],
+    ["Nikaah", "🤍", ["Nikaah", "Nikah"]],
+    ["Grih Pravesh", "🏡", ["Grih Pravesh"]],
+    ["Reception", "✨", ["Reception"]]
+  ];
 
-/*
-  The published Google Sheets URL is an HTML presentation, not a
-  reliable multi-worksheet data API. Set SHEETS below to the exact
-  worksheet tab names and their published gid values to enable live
-  product cards. We will fill these after checking the published tabs.
-*/
-const SHEETS = [
-  // Example: { name: "Tilak Thalis", gid: "0" }
-];
+  const occasionsEl = document.getElementById("occasions");
+  const statusEl = document.getElementById("status");
+  const overlay = document.getElementById("overlay");
+  const panelTitle = document.getElementById("panel-title");
+  const stepLabel = document.getElementById("step-label");
+  const panelIntro = document.getElementById("panel-intro");
+  const panelContent = document.getElementById("panel-content");
+  const backButton = document.getElementById("back");
+  const cartbar = document.getElementById("cartbar");
+  const cartSummary = document.getElementById("cart-summary");
 
-let allProducts = [];
-let selectedOccasion = "";
-let selectedCategory = "";
-const cart = new Map();
+  let products = [];
+  let currentOccasion = null;
+  let currentCategory = null;
+  let view = "categories";
+  let cart = new Map();
+  let requestTimer = null;
 
-const $ = id => document.getElementById(id);
-
-function norm(value) {
-  return String(value ?? "").trim().toLowerCase()
-    .replace(/[_-]+/g, " ").replace(/\s+/g, " ");
-}
-
-function findField(row, candidates) {
-  const keys = Object.keys(row);
-  for (const candidate of candidates) {
-    const match = keys.find(k => norm(k) === norm(candidate));
-    if (match && row[match] !== "") return row[match];
+  function normalize(value) {
+    return String(value || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/&/g, " and ")
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim()
+      .replace(/\s+/g, " ");
   }
-  for (const candidate of candidates) {
-    const match = keys.find(k => norm(k).includes(norm(candidate)));
-    if (match && row[match] !== "") return row[match];
+
+  function occasionValues(product) {
+    const value = product.occasions || product.occasion || "";
+    return Array.isArray(value) ? value : String(value).split(/[,;|\n]+/);
   }
-  return "";
-}
 
-function money(value) {
-  if (value === "" || value == null) return "";
-  if (typeof value === "number") return value;
-  const n = Number(String(value).replace(/[₹,\s]/g, "").replace(/[^\d.-]/g, ""));
-  return Number.isFinite(n) && n > 0 ? n : "";
-}
-
-function moneyText(value) {
-  const n = money(value);
-  return n === "" ? "Enquire for Price" :
-    "₹" + n.toLocaleString("en-IN", {maximumFractionDigits:2});
-}
-
-function splitOccasions(value) {
-  return String(value || "").split(/[,;\n|]+/)
-    .map(s => s.trim()).filter(Boolean);
-}
-
-function imageUrl(filename) {
-  const clean = String(filename || "").trim().replace(/^\/+/, "");
-  if (!clean) return "";
-  return IMAGE_BASE + clean.split("/").map(encodeURIComponent).join("/");
-}
-
-function renderOccasions() {
-  $("occasionGrid").innerHTML = "";
-  OCCASIONS.forEach((name, index) => {
-    const button = document.createElement("button");
-    button.className = "occasion";
-    button.innerHTML = `<small>OCCASION ${String(index+1).padStart(2,"0")}</small>${name}`;
-    button.addEventListener("click", () => chooseOccasion(name));
-    $("occasionGrid").appendChild(button);
-  });
-}
-
-function chooseOccasion(name) {
-  selectedOccasion = name;
-  selectedCategory = "";
-  $("occasionTitle").textContent = name;
-  $("products").classList.remove("hidden");
-  document.querySelectorAll(".occasion").forEach((b, i) =>
-    b.classList.toggle("active", OCCASIONS[i] === name));
-  renderCategories();
-  renderProducts();
-  $("products").scrollIntoView({behavior:"smooth"});
-}
-
-function occasionMatches(product) {
-  const values = splitOccasions(product.occasions).map(norm);
-  const target = norm(selectedOccasion);
-  return values.some(value =>
-    value === target ||
-    (target.includes("/") && target.split("/").map(norm).some(t => value === t)) ||
-    (value.includes("/") && value.split("/").map(norm).some(t => t === target))
-  );
-}
-
-function renderCategories() {
-  const matching = allProducts.filter(occasionMatches);
-  const categories = [...new Set(matching.map(p => p.category).filter(Boolean))]
-    .sort((a,b) => a.localeCompare(b));
-  $("categoryGrid").innerHTML = "";
-  const all = document.createElement("button");
-  all.className = "category" + (!selectedCategory ? " active" : "");
-  all.textContent = "All matching products";
-  all.onclick = () => {selectedCategory="";renderCategories();renderProducts();};
-  $("categoryGrid").appendChild(all);
-  categories.forEach(category => {
-    const button = document.createElement("button");
-    button.className = "category" + (selectedCategory === category ? " active" : "");
-    button.textContent = category;
-    button.onclick = () => {
-      selectedCategory = category;
-      renderCategories();
-      renderProducts();
-    };
-    $("categoryGrid").appendChild(button);
-  });
-}
-
-function renderProducts() {
-  const query = norm($("search").value);
-  let products = allProducts.filter(occasionMatches);
-  if (selectedCategory) products = products.filter(p => p.category === selectedCategory);
-  if (query) products = products.filter(p => norm(p.name + " " + p.description).includes(query));
-  if ($("sort").value !== "default") {
-    products.sort((a,b) => {
-      const ap = money(a.sellingPrice), bp = money(b.sellingPrice);
-      if (ap === "" && bp === "") return 0;
-      if (ap === "") return 1;
-      if (bp === "") return -1;
-      return $("sort").value === "low" ? ap-bp : bp-ap;
+  function productMatchesOccasion(product, occasion) {
+    const values = occasionValues(product).map(normalize);
+    return occasion.aliases.some(function (alias) {
+      const target = normalize(alias);
+      return values.some(function (value) {
+        return value === target ||
+          value.includes(target) ||
+          target.includes(value) && value.length > 3;
+      });
     });
   }
 
-  $("productGrid").innerHTML = "";
-  if (!allProducts.length) {
-    $("loadStatus").classList.remove("hidden");
-    $("loadStatus").textContent =
-      "The occasion and product interface is ready. To display live product cards, we still need the worksheet names and published sheet IDs from your Google Sheets workbook. No product names or prices have been invented.";
-    return;
-  }
-  $("loadStatus").classList.toggle("hidden", products.length > 0);
-  if (!products.length) {
-    $("loadStatus").textContent = "No matching products were found for this occasion. Check the occasion assignments in the workbook.";
-    $("loadStatus").classList.remove("hidden");
-    return;
+  function formatPrice(value) {
+    const raw = String(value || "").trim();
+    if (!raw) return "";
+    if (/[₹$€£]/.test(raw)) return raw;
+    const number = Number(raw.replace(/,/g, "").replace(/[^\d.]/g, ""));
+    return Number.isFinite(number) && number > 0
+      ? "₹" + number.toLocaleString("en-IN")
+      : raw;
   }
 
-  products.forEach(p => {
-    const card = document.createElement("article");
-    card.className = "card";
-    const img = document.createElement("img");
-    img.alt = p.name;
-    img.loading = "lazy";
-    img.src = imageUrl(p.image);
-    img.onerror = () => {
-      img.style.display = "none";
-    };
-    card.appendChild(img);
+  function getPriceNumber(value) {
+    const number = Number(String(value || "")
+      .replace(/,/g, "").replace(/[^\d.]/g, ""));
+    return Number.isFinite(number) ? number : 0;
+  }
 
-    const body = document.createElement("div");
-    body.className = "card-body";
-    const title = document.createElement("h3");
-    title.textContent = p.name || "Product";
-    body.appendChild(title);
+  function escapeHTML(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, function (ch) {
+      return {
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#39;"
+      }[ch];
+    });
+  }
 
-    if (p.description) {
-      const desc = document.createElement("p");
-      desc.className = "desc";
-      desc.textContent = p.description;
-      body.appendChild(desc);
+  function imageURL(filename) {
+    const name = String(filename || "").trim();
+    if (!name) return "";
+    if (/^https?:\/\//i.test(name)) return name;
+    return "/images/" + name.split("/").map(encodeURIComponent).join("/");
+  }
+
+  function loadFeed() {
+    if (requestTimer) clearTimeout(requestTimer);
+
+    const callbackName = "__blissFeed_" +
+      Date.now() + "_" + Math.floor(Math.random() * 100000);
+
+    const script = document.createElement("script");
+    let finished = false;
+
+    function finish() {
+      if (finished) return;
+      finished = true;
+      delete window[callbackName];
+      script.remove();
+      clearTimeout(timeout);
     }
 
-    const price = document.createElement("div");
-    price.className = "prices";
-    if (money(p.originalPrice) !== "" &&
-        money(p.originalPrice) > money(p.sellingPrice)) {
-      const old = document.createElement("span");
-      old.className = "old";
-      old.textContent = moneyText(p.originalPrice);
-      price.appendChild(old);
-    }
-    const sale = document.createElement("span");
-    sale.className = "sale";
-    sale.textContent = moneyText(p.sellingPrice);
-    price.appendChild(sale);
-    body.appendChild(price);
+    const timeout = setTimeout(function () {
+      finish();
+      if (!products.length) {
+        statusEl.textContent =
+          "We couldn't load the catalogue. Please refresh the page or try again shortly.";
+      }
+    }, 25000);
 
-    const meta = document.createElement("p");
-    meta.className = "meta";
-    meta.textContent = [
-      p.moq ? "Minimum order: " + p.moq : "",
-      p.shipping ? "Shipping: " + p.shipping : ""
-    ].filter(Boolean).join(" • ");
-    if (meta.textContent) body.appendChild(meta);
+    window[callbackName] = function (data) {
+      finish();
 
-    const qtyRow = document.createElement("div");
-    qtyRow.className = "quantity";
-    const qty = document.createElement("input");
-    qty.type = "number";
-    qty.min = p.moq || 1;
-    qty.step = "1";
-    qty.value = String(p.moq || 1);
-    qty.setAttribute("aria-label", "Quantity for " + p.name);
-    qtyRow.append("Qty ", qty);
-    body.appendChild(qtyRow);
+      if (data && data.success === false) {
+        statusEl.textContent = "Catalogue error: " + (data.error || "Please try again.");
+        return;
+      }
 
-    const add = document.createElement("button");
-    add.className = "btn";
-    add.textContent = cart.has(p.id) ? "Update selection" : "Add to enquiry";
-    add.onclick = () => {
-      const amount = Math.max(Number(p.moq || 1), Math.floor(Number(qty.value) || 1));
-      cart.set(p.id, {product:p, quantity:amount});
-      add.textContent = "Update selection";
-      updateCart();
+      if (!data || !Array.isArray(data.products)) {
+        statusEl.textContent = "The catalogue response could not be read.";
+        return;
+      }
+
+      products = data.products.filter(function (p) {
+        return p && (p.name || p.productName);
+      });
+
+      renderOccasions();
+      statusEl.textContent = products.length
+        ? products.length + " products loaded from the live catalogue."
+        : "No products were found. Please check the worksheet headers.";
+
+      requestTimer = setTimeout(loadFeed, 5 * 60 * 1000);
     };
-    body.appendChild(add);
-    card.appendChild(body);
-    $("productGrid").appendChild(card);
-  });
-}
 
-function updateCart() {
-  const count = cart.size;
-  $("cartbar").classList.toggle("hidden", count === 0);
-  $("cartSummary").textContent = `${count} product${count===1?"":"s"} selected`;
-}
+    script.onerror = function () {
+      finish();
+      if (!products.length) {
+        statusEl.textContent =
+          "Unable to connect to the catalogue. Please check your connection.";
+      }
+    };
 
-function checkout() {
-  if (!cart.size) return;
-  const lines = [
-    "Hello Bliss Giftings! I'd like to enquire about these wedding catalogue products.",
-    "Occasion: " + selectedOccasion,
-    ""
-  ];
-  for (const {product:p, quantity} of cart.values()) {
-    lines.push(
-      `${p.name} — Qty: ${quantity} — Selling price: ${moneyText(p.sellingPrice)}` +
-      (p.image ? ` — Image: ${p.image}` : "")
-    );
+    script.src = FEED_URL + "?callback=" + callbackName;
+    document.body.appendChild(script);
   }
-  lines.push("", "Please confirm availability, shipping charges and final total.");
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`, "_blank", "noopener");
-}
 
-/* Data-loader placeholder: the exact worksheet gids and header layout
-   must be confirmed before live data can be read correctly. */
-async function loadCatalogue() {
-  $("loadStatus").textContent =
-    "Next connection step: map the published worksheet tabs to the product fields. The published workbook is available here.";
-  $("loadStatus").classList.remove("hidden");
-}
+  function renderOccasions() {
+    occasionsEl.innerHTML = "";
 
-$("search").addEventListener("input", renderProducts);
-$("sort").addEventListener("change", renderProducts);
-$("checkout").addEventListener("click", checkout);
-renderOccasions();
-loadCatalogue();
-</script>
-</body>
-  </html>
-  
+    occasionList.forEach(function (occasionData) {
+      const occasion = {
+        name: occasionData[0],
+        icon: occasionData[1],
+        aliases: occasionData[2]
+      };
+
+      const count = products.filter(function (p) {
+        return productMatchesOccasion(p, occasion);
+      }).length;
+
+      const button = document.createElement("button");
+      button.className = "occasion";
+      button.innerHTML =
+        '<span class="symbol">' + occasion.icon + '</span>' +
+        '<span class="name">' + escapeHTML(occasion.name) + '</span>' +
+        '<span class="hint">' +
+          (count ? count + " products · Explore" : "Explore collection") +
+        '</span>';
+
+      button.addEventListener("click", function () {
+        openOccasion(occasion);
+      });
+
+      occasionsEl.appendChild(button);
+    });
+  }
+
+  function openOccasion(occasion) {
+    currentOccasion = occasion;
+    currentCategory = null;
+    view = "categories";
+    cart.clear();
+    updateCart();
+    renderCategories();
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closePanel() {
+    overlay.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  function goBack() {
+    if (view === "products") {
+      view = "categories";
+      currentCategory = null;
+      renderCategories();
+    } else {
+      closePanel();
+    }
+  }
+
+  function productsForOccasion() {
+    return products.filter(function (p) {
+      return productMatchesOccasion(p, currentOccasion);
+    });
+  }
+
+  function renderCategories() {
+    view = "categories";
+    stepLabel.textContent = "Wedding collection";
+    panelTitle.textContent = currentOccasion.name;
+    panelIntro.textContent =
+      "Choose a gift category to discover the products curated for this occasion.";
+    backButton.hidden = true;
+    cartbar.classList.remove("visible");
+
+    const relevant = productsForOccasion();
+    const categories = Array.from(new Set(
+      relevant.map(function (p) {
+        return String(p.category || p.sheet || "Wedding Gifts").trim();
+      }).filter(Boolean)
+    )).sort(function (a, b) { return a.localeCompare(b); });
+
+    panelContent.innerHTML = "";
+    const grid = document.createElement("div");
+    grid.className = "category-grid";
+
+    if (!categories.length) {
+      grid.innerHTML =
+        '<div class="empty">No products are currently matched to this occasion. ' +
+        'Please check the Occasion column in your Google Sheet.</div>';
+    }
+
+    categories.forEach(function (category) {
+      const count = relevant.filter(function (p) {
+        return String(p.category || p.sheet || "Wedding Gifts").trim() === category;
+      }).length;
+
+      const button = document.createElement("button");
+      button.className = "category";
+      button.textContent = category + " (" + count + ")";
+      button.addEventListener("click", function () {
+        currentCategory = category;
+        renderProducts();
+      });
+      grid.appendChild(button);
+    });
+
+    panelContent.appendChild(grid);
+  }
+
+  function renderProducts() {
+    view = "products";
+    stepLabel.textContent = currentOccasion.name;
+    panelTitle.textContent = currentCategory;
+    panelIntro.textContent =
+      "Explore the collection. Select quantities to prepare a WhatsApp enquiry.";
+    backButton.hidden = false;
+    panelContent.innerHTML = "";
+
+    const list = productsForOccasion().filter(function (p) {
+      return String(p.category || p.sheet || "Wedding Gifts").trim() === currentCategory;
+    });
+
+    const grid = document.createElement("div");
+    grid.className = "product-grid";
+
+    if (!list.length) {
+      grid.innerHTML = '<div class="empty">No products found in this category.</div>';
+    }
+
+    list.forEach(function (p) {
+      const productName = String(p.name || p.productName || "Wedding Gift");
+      const productId = String(p.id || p.sheet + "-" + productName);
+      const image = imageURL(p.image || p.imageName || p.imageFilename);
+      const selling = formatPrice(p.sellingPrice || p.price);
+      const original = formatPrice(p.originalPrice);
+      const quantity = cart.get(productId)?.quantity || 1;
+      const isSelected = cart.has(productId);
+
+      const card = document.createElement("article");
+      card.className = "product";
+
+      const img = document.createElement("img");
+      img.src = image || "/images/placeholder.jpg";
+      img.alt = productName;
+      img.loading = "lazy";
+      img.onerror = function () {
+        img.onerror = null;
+        img.style.display = "none";
+      };
+      card.appendChild(img);
+
+      const body = document.createElement("div");
+      body.className = "product-body";
+
+      const title = document.createElement("h3");
+      title.textContent = productName;
+      body.appendChild(title);
+
+      if (p.description) {
+        const description = document.createElement("p");
+        description.className = "description";
+        description.textContent = p.description;
+        body.appendChild(description);
+      }
+
+      const prices = document.createElement("div");
+      prices.className = "prices";
+      if (selling) {
+        const sell = document.createElement("span");
+        sell.className = "selling";
+        sell.textContent = selling;
+        prices.appendChild(sell);
+      }
+      if (original && original !== selling) {
+        const old = document.createElement("span");
+        old.className = "original";
+        old.textContent = original;
+        prices.appendChild(old);
+      }
+      body.appendChild(prices);
+
+      const meta = document.createElement("div");
+      meta.className = "product-meta";
+      const details = [];
+      if (p.moq) details.push("Minimum order: " + p.moq);
+     
