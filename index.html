@@ -1,0 +1,411 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#fbf6eb">
+<title>Bliss Wedding Catalogue | Bliss Giftings</title>
+<style>
+:root{--gold:#b18a45;--dark:#34281e;--cream:#fbf6eb;--line:#e5d5b5;--muted:#766b5f;--white:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--dark);font-family:Georgia,"Times New Roman",serif}
+button,input,select{font:inherit}
+a{color:inherit}
+header{position:sticky;top:0;z-index:5;background:#fbf6ebf5;border-bottom:1px solid var(--line);padding:15px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.logo{font-size:22px;font-weight:bold;letter-spacing:2px}
+.logo small{display:block;font:10px Arial,sans-serif;letter-spacing:4px;color:#87652f;margin-top:4px}
+nav a{font:12px Arial,sans-serif;color:#87652f;text-decoration:none;margin-left:15px}
+.hero{text-align:center;padding:76px 20px 72px;background:radial-gradient(ellipse at top,#fff 0,transparent 65%),linear-gradient(135deg,#f1e3c5,#fffaf0 65%,#e9d8b4);border-bottom:1px solid var(--line)}
+.eyebrow{text-transform:uppercase;letter-spacing:3px;color:#89672f;font:10px Arial,sans-serif}
+h1{font-size:clamp(40px,9vw,72px);line-height:1.08;font-weight:normal;margin:22px auto 15px}
+.hero p,.intro{font:15px/1.8 Arial,sans-serif;color:var(--muted);max-width:570px;margin:0 auto 25px}
+.btn{display:inline-block;background:var(--gold);color:white;border:1px solid var(--gold);border-radius:3px;padding:13px 18px;text-decoration:none;font:13px Arial,sans-serif;cursor:pointer}
+.btn.outline{background:transparent;color:#805d26}
+section{padding:48px 18px;scroll-margin-top:75px}
+.section-title{text-align:center;margin:0 auto 28px}
+h2{font-size:31px;font-weight:normal;margin:10px 0}
+h3{font-weight:normal}
+.occasion-grid,.category-grid,.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:1100px;margin:auto}
+.occasion,.category{border:1px solid var(--line);background:#fffdf8;padding:19px 10px;text-align:center;cursor:pointer;min-height:82px;color:var(--dark);transition:.15s}
+.occasion:hover,.occasion.active,.category:hover,.category.active{background:#efe0bf;border-color:var(--gold)}
+.occasion small{display:block;font:10px Arial,sans-serif;color:#87652f;letter-spacing:2px;margin-bottom:9px}
+.tools{max-width:1100px;margin:0 auto 20px;display:grid;grid-template-columns:1fr;gap:10px}
+input,select{width:100%;padding:12px;border:1px solid var(--line);background:#fffdf8;color:var(--dark);border-radius:3px}
+.products{align-items:stretch}
+.card{background:white;border:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+.card img{width:100%;aspect-ratio:4/4.5;object-fit:cover;background:#f2eadb}
+.card-body{padding:14px;display:flex;flex-direction:column;flex:1}
+.card h3{font-size:19px;margin:0 0 9px}
+.desc,.meta{font:12px/1.65 Arial,sans-serif;color:var(--muted)}
+.prices{margin:8px 0 12px;font:14px Arial,sans-serif}
+.old{color:#82786b;text-decoration:line-through;margin-right:7px}
+.sale{font-weight:bold;color:#72501c;font-size:17px}
+.card .btn{margin-top:auto;text-align:center}
+.quantity{display:flex;gap:8px;align-items:center;margin:12px 0}
+.quantity input{width:78px}
+.panel{max-width:1100px;margin:auto}
+.hidden{display:none!important}
+.notice{max-width:900px;margin:18px auto;padding:14px;border:1px solid var(--line);background:#fffdf8;font:13px/1.7 Arial,sans-serif;color:var(--muted)}
+#cartbar{position:sticky;bottom:0;z-index:4;background:#34281ef5;color:white;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;font:13px Arial,sans-serif}
+#cartbar .btn{background:#c09b59;border-color:#c09b59}
+footer{padding:30px 20px;text-align:center;background:#34281e;color:#f8ecd3;font:12px/2 Arial,sans-serif}
+footer a{color:#efd59c}
+@media(min-width:650px){.occasion-grid,.category-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.products{grid-template-columns:repeat(3,minmax(0,1fr))}.tools{grid-template-columns:2fr 1fr}}
+@media(min-width:950px){.occasion-grid,.category-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.products{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<header>
+  <a href="#" style="text-decoration:none"><div class="logo">BLISS<small>WEDDING CATALOGUE</small></div></a>
+  <nav><a href="#occasions">OCCASIONS</a><a href="#products">PRODUCTS</a></nav>
+</header>
+
+<main>
+<section class="hero">
+  <div class="eyebrow">Bliss Giftings presents</div>
+  <h1>Celebrate Every<br>Wedding Moment</h1>
+  <p>Thoughtful gifts, beautiful details and memorable celebrations. Discover your wedding collection by occasion.</p>
+  <a class="btn" href="#occasions">Explore the Collection</a>
+</section>
+
+<section id="occasions">
+  <div class="section-title">
+    <div class="eyebrow">Find your celebration</div>
+    <h2>What occasion are you shopping for?</h2>
+    <p class="intro">Choose an occasion to discover matching products from our catalogue.</p>
+  </div>
+  <div id="occasionGrid" class="occasion-grid"></div>
+</section>
+
+<section id="products" class="hidden">
+  <div class="section-title">
+    <div class="eyebrow">Your selected celebration</div>
+    <h2 id="occasionTitle">Products</h2>
+    <p class="intro">Choose a category, explore products and add your selections to your WhatsApp enquiry.</p>
+  </div>
+  <div class="panel">
+    <div id="categoryGrid" class="category-grid"></div>
+    <div class="tools">
+      <input id="search" type="search" placeholder="Search products by name…" aria-label="Search products">
+      <select id="sort" aria-label="Sort products">
+        <option value="default">Recommended order</option>
+        <option value="low">Price: low to high</option>
+        <option value="high">Price: high to low</option>
+      </select>
+    </div>
+    <p id="loadStatus" class="notice">Connecting to the product catalogue…</p>
+    <div id="productGrid" class="products"></div>
+  </div>
+</section>
+
+<section id="about" style="background:#f2e8d4;text-align:center">
+  <div class="section-title">
+    <div class="eyebrow">Our promise</div>
+    <h2>Made for meaningful moments</h2>
+    <p class="intro">Browse by occasion, review product details and contact Bliss Giftings to confirm availability, shipping and your order.</p>
+    <a class="btn" href="https://wa.me/919998920644" target="_blank" rel="noopener">Contact us on WhatsApp</a>
+  </div>
+</section>
+</main>
+
+<div id="cartbar" class="hidden">
+  <span id="cartSummary">0 products selected</span>
+  <button class="btn" id="checkout">Send order enquiry</button>
+</div>
+
+<footer>
+  <strong>BLISS GIFTINGS</strong><br>
+  Wedding & Marriage Gifting Catalogue<br>
+  WhatsApp: <a href="https://wa.me/919998920644" target="_blank" rel="noopener">+91 99989 20644</a><br>
+  <span>Prices and availability are subject to confirmation.</span>
+</footer>
+
+<script>
+/* ---------------------------------------------------------
+   BLISS WEDDING CATALOGUE
+   Google Sheets is the product source.
+   Image paths use the exact GitHub folder: Public/images/
+---------------------------------------------------------- */
+
+const PUBLISHED_SHEET_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vTretwKKOCok1LLbuu-K0QIRzaZLgXP784aDmFxfA6OjeFvM9Jg0J5lC10S1P3nlTyTuE4GowHEcr-a/pubhtml";
+
+const IMAGE_BASE = "/Public/images/";
+const WHATSAPP_NUMBER = "919998920644";
+
+const OCCASIONS = [
+ "Baat Pakki",
+ "Kankotri Lekhan",
+ "Bachelorette",
+ "Mehndi",
+ "Haldi",
+ "Sangeet",
+ "Ganesh Puja / Mandva Muhurat / Grah Shanti",
+ "Mameru",
+ "Mata Ki Chowki",
+ "Baraat Welcome",
+ "Shaadi",
+ "Nikaah",
+ "Grih Pravesh",
+ "Reception"
+];
+
+/*
+  The published Google Sheets URL is an HTML presentation, not a
+  reliable multi-worksheet data API. Set SHEETS below to the exact
+  worksheet tab names and their published gid values to enable live
+  product cards. We will fill these after checking the published tabs.
+*/
+const SHEETS = [
+  // Example: { name: "Tilak Thalis", gid: "0" }
+];
+
+let allProducts = [];
+let selectedOccasion = "";
+let selectedCategory = "";
+const cart = new Map();
+
+const $ = id => document.getElementById(id);
+
+function norm(value) {
+  return String(value ?? "").trim().toLowerCase()
+    .replace(/[_-]+/g, " ").replace(/\s+/g, " ");
+}
+
+function findField(row, candidates) {
+  const keys = Object.keys(row);
+  for (const candidate of candidates) {
+    const match = keys.find(k => norm(k) === norm(candidate));
+    if (match && row[match] !== "") return row[match];
+  }
+  for (const candidate of candidates) {
+    const match = keys.find(k => norm(k).includes(norm(candidate)));
+    if (match && row[match] !== "") return row[match];
+  }
+  return "";
+}
+
+function money(value) {
+  if (value === "" || value == null) return "";
+  if (typeof value === "number") return value;
+  const n = Number(String(value).replace(/[₹,\s]/g, "").replace(/[^\d.-]/g, ""));
+  return Number.isFinite(n) && n > 0 ? n : "";
+}
+
+function moneyText(value) {
+  const n = money(value);
+  return n === "" ? "Enquire for Price" :
+    "₹" + n.toLocaleString("en-IN", {maximumFractionDigits:2});
+}
+
+function splitOccasions(value) {
+  return String(value || "").split(/[,;\n|]+/)
+    .map(s => s.trim()).filter(Boolean);
+}
+
+function imageUrl(filename) {
+  const clean = String(filename || "").trim().replace(/^\/+/, "");
+  if (!clean) return "";
+  return IMAGE_BASE + clean.split("/").map(encodeURIComponent).join("/");
+}
+
+function renderOccasions() {
+  $("occasionGrid").innerHTML = "";
+  OCCASIONS.forEach((name, index) => {
+    const button = document.createElement("button");
+    button.className = "occasion";
+    button.innerHTML = `<small>OCCASION ${String(index+1).padStart(2,"0")}</small>${name}`;
+    button.addEventListener("click", () => chooseOccasion(name));
+    $("occasionGrid").appendChild(button);
+  });
+}
+
+function chooseOccasion(name) {
+  selectedOccasion = name;
+  selectedCategory = "";
+  $("occasionTitle").textContent = name;
+  $("products").classList.remove("hidden");
+  document.querySelectorAll(".occasion").forEach((b, i) =>
+    b.classList.toggle("active", OCCASIONS[i] === name));
+  renderCategories();
+  renderProducts();
+  $("products").scrollIntoView({behavior:"smooth"});
+}
+
+function occasionMatches(product) {
+  const values = splitOccasions(product.occasions).map(norm);
+  const target = norm(selectedOccasion);
+  return values.some(value =>
+    value === target ||
+    (target.includes("/") && target.split("/").map(norm).some(t => value === t)) ||
+    (value.includes("/") && value.split("/").map(norm).some(t => t === target))
+  );
+}
+
+function renderCategories() {
+  const matching = allProducts.filter(occasionMatches);
+  const categories = [...new Set(matching.map(p => p.category).filter(Boolean))]
+    .sort((a,b) => a.localeCompare(b));
+  $("categoryGrid").innerHTML = "";
+  const all = document.createElement("button");
+  all.className = "category" + (!selectedCategory ? " active" : "");
+  all.textContent = "All matching products";
+  all.onclick = () => {selectedCategory="";renderCategories();renderProducts();};
+  $("categoryGrid").appendChild(all);
+  categories.forEach(category => {
+    const button = document.createElement("button");
+    button.className = "category" + (selectedCategory === category ? " active" : "");
+    button.textContent = category;
+    button.onclick = () => {
+      selectedCategory = category;
+      renderCategories();
+      renderProducts();
+    };
+    $("categoryGrid").appendChild(button);
+  });
+}
+
+function renderProducts() {
+  const query = norm($("search").value);
+  let products = allProducts.filter(occasionMatches);
+  if (selectedCategory) products = products.filter(p => p.category === selectedCategory);
+  if (query) products = products.filter(p => norm(p.name + " " + p.description).includes(query));
+  if ($("sort").value !== "default") {
+    products.sort((a,b) => {
+      const ap = money(a.sellingPrice), bp = money(b.sellingPrice);
+      if (ap === "" && bp === "") return 0;
+      if (ap === "") return 1;
+      if (bp === "") return -1;
+      return $("sort").value === "low" ? ap-bp : bp-ap;
+    });
+  }
+
+  $("productGrid").innerHTML = "";
+  if (!allProducts.length) {
+    $("loadStatus").classList.remove("hidden");
+    $("loadStatus").textContent =
+      "The occasion and product interface is ready. To display live product cards, we still need the worksheet names and published sheet IDs from your Google Sheets workbook. No product names or prices have been invented.";
+    return;
+  }
+  $("loadStatus").classList.toggle("hidden", products.length > 0);
+  if (!products.length) {
+    $("loadStatus").textContent = "No matching products were found for this occasion. Check the occasion assignments in the workbook.";
+    $("loadStatus").classList.remove("hidden");
+    return;
+  }
+
+  products.forEach(p => {
+    const card = document.createElement("article");
+    card.className = "card";
+    const img = document.createElement("img");
+    img.alt = p.name;
+    img.loading = "lazy";
+    img.src = imageUrl(p.image);
+    img.onerror = () => {
+      img.style.display = "none";
+    };
+    card.appendChild(img);
+
+    const body = document.createElement("div");
+    body.className = "card-body";
+    const title = document.createElement("h3");
+    title.textContent = p.name || "Product";
+    body.appendChild(title);
+
+    if (p.description) {
+      const desc = document.createElement("p");
+      desc.className = "desc";
+      desc.textContent = p.description;
+      body.appendChild(desc);
+    }
+
+    const price = document.createElement("div");
+    price.className = "prices";
+    if (money(p.originalPrice) !== "" &&
+        money(p.originalPrice) > money(p.sellingPrice)) {
+      const old = document.createElement("span");
+      old.className = "old";
+      old.textContent = moneyText(p.originalPrice);
+      price.appendChild(old);
+    }
+    const sale = document.createElement("span");
+    sale.className = "sale";
+    sale.textContent = moneyText(p.sellingPrice);
+    price.appendChild(sale);
+    body.appendChild(price);
+
+    const meta = document.createElement("p");
+    meta.className = "meta";
+    meta.textContent = [
+      p.moq ? "Minimum order: " + p.moq : "",
+      p.shipping ? "Shipping: " + p.shipping : ""
+    ].filter(Boolean).join(" • ");
+    if (meta.textContent) body.appendChild(meta);
+
+    const qtyRow = document.createElement("div");
+    qtyRow.className = "quantity";
+    const qty = document.createElement("input");
+    qty.type = "number";
+    qty.min = p.moq || 1;
+    qty.step = "1";
+    qty.value = String(p.moq || 1);
+    qty.setAttribute("aria-label", "Quantity for " + p.name);
+    qtyRow.append("Qty ", qty);
+    body.appendChild(qtyRow);
+
+    const add = document.createElement("button");
+    add.className = "btn";
+    add.textContent = cart.has(p.id) ? "Update selection" : "Add to enquiry";
+    add.onclick = () => {
+      const amount = Math.max(Number(p.moq || 1), Math.floor(Number(qty.value) || 1));
+      cart.set(p.id, {product:p, quantity:amount});
+      add.textContent = "Update selection";
+      updateCart();
+    };
+    body.appendChild(add);
+    card.appendChild(body);
+    $("productGrid").appendChild(card);
+  });
+}
+
+function updateCart() {
+  const count = cart.size;
+  $("cartbar").classList.toggle("hidden", count === 0);
+  $("cartSummary").textContent = `${count} product${count===1?"":"s"} selected`;
+}
+
+function checkout() {
+  if (!cart.size) return;
+  const lines = [
+    "Hello Bliss Giftings! I'd like to enquire about these wedding catalogue products.",
+    "Occasion: " + selectedOccasion,
+    ""
+  ];
+  for (const {product:p, quantity} of cart.values()) {
+    lines.push(
+      `${p.name} — Qty: ${quantity} — Selling price: ${moneyText(p.sellingPrice)}` +
+      (p.image ? ` — Image: ${p.image}` : "")
+    );
+  }
+  lines.push("", "Please confirm availability, shipping charges and final total.");
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`, "_blank", "noopener");
+}
+
+/* Data-loader placeholder: the exact worksheet gids and header layout
+   must be confirmed before live data can be read correctly. */
+async function loadCatalogue() {
+  $("loadStatus").textContent =
+    "Next connection step: map the published worksheet tabs to the product fields. The published workbook is available here.";
+  $("loadStatus").classList.remove("hidden");
+}
+
+$("search").addEventListener("input", renderProducts);
+$("sort").addEventListener("change", renderProducts);
+$("checkout").addEventListener("click", checkout);
+renderOccasions();
+loadCatalogue();
+</script>
+</body>
+  </html>
+  
