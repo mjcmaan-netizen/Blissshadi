@@ -741,4 +741,124 @@ footer strong { color: var(--gold-dark); }
       meta.className = "product-meta";
       const details = [];
       if (p.moq) details.push("Minimum order: " + p.moq);
+      
+      if (p.shipping) details.push(p.shipping);
+      meta.textContent = details.join(" · ");
+      if (details.length) body.appendChild(meta);
+
+      const orderRow = document.createElement("div");
+      orderRow.className = "order-row";
+
+      const qty = document.createElement("input");
+      qty.className = "qty";
+      qty.type = "number";
+      qty.min = "1";
+      qty.step = "1";
+      qty.value = String(quantity);
+      qty.setAttribute("aria-label", "Quantity for " + productName);
+
+      const add = document.createElement("button");
+      add.className = "add" + (isSelected ? " selected" : "");
+      add.textContent = isSelected ? "✓ Added" : "Add to enquiry";
+
+      add.addEventListener("click", function () {
+        const q = Math.max(1, parseInt(qty.value, 10) || 1);
+
+        if (cart.has(productId)) {
+          cart.delete(productId);
+        } else {
+          cart.set(productId, {
+            id: productId,
+            name: productName,
+            price: selling,
+            quantity: q
+          });
+        }
+
+        updateCart();
+        renderProducts();
+      });
+
+      qty.addEventListener("change", function () {
+        if (cart.has(productId)) {
+          const item = cart.get(productId);
+          item.quantity = Math.max(1, parseInt(qty.value, 10) || 1);
+          cart.set(productId, item);
+          updateCart();
+        }
+      });
+
+      orderRow.appendChild(qty);
+      orderRow.appendChild(add);
+      body.appendChild(orderRow);
+      card.appendChild(body);
+      grid.appendChild(card);
+    });
+
+    panelContent.appendChild(grid);
+    updateCart();
+  }
+
+  function updateCart() {
+    const count = Array.from(cart.values()).reduce(function (sum, item) {
+      return sum + item.quantity;
+    }, 0);
+
+    if (!count) {
+      cartbar.classList.remove("visible");
+      return;
+    }
+
+    cartbar.classList.add("visible");
+    cartSummary.innerHTML =
+      "<strong>" + count + (count === 1 ? " item" : " items") +
+      " selected</strong><br>Continue on WhatsApp to enquire.";
+  }
+
+  function checkout() {
+    if (!cart.size) return;
+
+    const lines = Array.from(cart.values()).map(function (item) {
+      return "• " + item.name +
+        " — Qty: " + item.quantity +
+        (item.price ? " — Listed price: " + item.price : "");
+    });
+
+    const message = [
+      "Hello Bliss Giftings!",
+      "I would like to enquire about these wedding gifts:",
+      "",
+      "Occasion: " + (currentOccasion ? currentOccasion.name : ""),
+      "Category: " + (currentCategory || ""),
+      "",
+      lines.join("\n"),
+      "",
+      "Please confirm availability, final pricing and delivery details.",
+      "Thank you!"
+    ].join("\n");
+
+    const url = "https://wa.me/" + WHATSAPP_NUMBER +
+      "?text=" + encodeURIComponent(message);
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  document.getElementById("close").addEventListener("click", closePanel);
+  backButton.addEventListener("click", goBack);
+  document.getElementById("checkout").addEventListener("click", checkout);
+
+  overlay.addEventListener("click", function (event) {
+    if (event.target === overlay) closePanel();
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") closePanel();
+  });
+
+  loadFeed();
+})();
+</script>
+</body>
+</html>
+
      
