@@ -751,182 +751,200 @@ function imageURLs(filename) {
       } else {
         img.alt = productName + " — image filename missing from catalogue";
       }
-      img.onerror = function () {
-        img.onerror = null;
-        img.removeAttribute("src");
-        img.alt = "Product image unavailable";
-        img.style.display = "block";
-        img.style.objectFit = "contain";
-      };
-      card.appendChild(img);
+         img.onerror = function () {
+    attempt++;
 
-      const body = document.createElement("div");
-      body.className = "product-body";
+    if (attempt < urls.length) {
+      img.src = urls[attempt];
+    } else {
+      img.remove();
 
-      const title = document.createElement("h3");
-      title.textContent = productName;
-      body.appendChild(title);
+      imageBox.textContent = "Image unavailable";
+      imageBox.setAttribute(
+        "aria-label",
+        "Image unavailable for " + name
+      );
+    }
+   };
 
-      if (p.description) {
-        const description = document.createElement("p");
-        description.className = "description";
-        description.textContent = p.description;
-        body.appendChild(description);
-      }
+   img.src = urls[0];
+   imageBox.appendChild(img);
+  }
 
-      const prices = document.createElement("div");
-      prices.className = "prices";
-      if (selling) {
-        const sell = document.createElement("span");
-        sell.className = "selling";
-        sell.textContent = selling;
-        prices.appendChild(sell);
-      }
-      if (original && original !== selling) {
-        const old = document.createElement("span");
-        old.className = "original";
-        old.textContent = original;
-        prices.appendChild(old);
-      }
-      body.appendChild(prices);
+  card.appendChild(imageBox);
 
-      const meta = document.createElement("div");
-      meta.className = "product-meta";
-      const details = [];
-      if (p.moq) details.push("Minimum order: " + p.moq);
-      
-      if (p.shipping) details.push(p.shipping);
-      meta.textContent = details.join(" · ");
-      if (details.length) body.appendChild(meta);
+  const body = document.createElement("div");
+  body.className = "product-body";
 
-      const orderRow = document.createElement("div");
-      orderRow.className = "order-row";
+  const title = document.createElement("h3");
+  title.textContent = name;
+  body.appendChild(title);
 
-      const qty = document.createElement("input");
-      qty.className = "qty";
-      qty.type = "number";
-      qty.min = "1";
-      qty.step = "1";
-      qty.value = String(quantity);
-      qty.setAttribute("aria-label", "Quantity for " + productName);
+  const description = field(p, ["description", "Description"]);
 
-      const add = document.createElement("button");
-      add.className = "add" + (isSelected ? " selected" : "");
-      add.textContent = isSelected ? "✓ Added" : "Add to enquiry";
+  if (description) {
+    const d = document.createElement("p");
+    d.className = "description";
+    d.textContent = description;
+    body.appendChild(d);
+  }
 
-      add.addEventListener("click", function () {
-        const q = Math.max(1, parseInt(qty.value, 10) || 1);
+  const prices = document.createElement("div");
+  prices.className = "prices";
 
-        if (cart.has(productId)) {
-          cart.delete(productId);
-        } else {
-          cart.set(productId, {
-            id: productId,
-            name: productName,
-            price: selling,
-            quantity: q
-          });
-        }
+  if (selling) {
+    const s = document.createElement("span");
+    s.className = "selling";
+    s.textContent = selling;
+    prices.appendChild(s);
+  }
 
-        updateCart();
-        renderProducts();
+  if (original && original !== selling) {
+    const old = document.createElement("span");
+    old.className = "original";
+    old.textContent = original;
+    prices.appendChild(old);
+  }
+
+  body.appendChild(prices);
+
+  const details = [];
+  const moq = field(p, ["moq", "MOQ", "Minimum Order Quantity"]);
+  const shipping = field(p, ["shipping", "Shipping"]);
+
+  if (moq) details.push("Minimum order: " + moq);
+  if (shipping) details.push(shipping);
+
+  if (details.length) {
+    const meta = document.createElement("div");
+    meta.className = "product-meta";
+    meta.textContent = details.join(" · ");
+    body.appendChild(meta);
+  }
+
+  const row = document.createElement("div");
+  row.className = "order-row";
+
+  const qty = document.createElement("input");
+  qty.className = "qty";
+  qty.type = "number";
+  qty.min = "1";
+  qty.step = "1";
+  qty.value = qtyValue;
+  qty.setAttribute("aria-label", "Quantity for " + name);
+
+  const add = document.createElement("button");
+  add.className = "add" + (selected ? " selected" : "");
+  add.textContent = selected ? "✓ Added" : "Add to enquiry";
+
+  add.addEventListener("click", function () {
+    if (cart.has(id)) {
+      cart.delete(id);
+    } else {
+      cart.set(id, {
+        id: id,
+        name: name,
+        price: selling,
+        quantity: Math.max(1, parseInt(qty.value, 10) || 1)
       });
+    }
 
-      qty.addEventListener("change", function () {
-        if (cart.has(productId)) {
-          const item = cart.get(productId);
-          item.quantity = Math.max(1, parseInt(qty.value, 10) || 1);
-          cart.set(productId, item);
-          updateCart();
-        }
-      });
-
-      orderRow.appendChild(qty);
-      orderRow.appendChild(add);
-      body.appendChild(orderRow);
-      card.appendChild(body);
-      grid.appendChild(card);
-    });
-
-    panelContent.appendChild(grid);
     updateCart();
-  }
-
-  function updateCart() {
-    const count = Array.from(cart.values()).reduce(function (sum, item) {
-      return sum + item.quantity;
-    }, 0);
-
-    if (!count) {
-      cartbar.classList.remove("visible");
-      return;
-    }
-
-    cartbar.classList.add("visible");
-    cartSummary.innerHTML =
-      "<strong>" + count + (count === 1 ? " item" : " items") +
-      " selected</strong><br>Continue on WhatsApp to enquire.";
-  }
-
-  function checkout() {
-    if (!cart.size) return;
-
-    const lines = Array.from(cart.values()).map(function (item) {
-      return "• " + item.name +
-        " — Qty: " + item.quantity +
-        (item.price ? " — Listed price: " + item.price : "");
-    });
-
-    const message = [
-      "Hello Bliss Giftings!",
-      "I would like to enquire about these wedding gifts:",
-      "",
-      "Occasion: " + (currentOccasion ? currentOccasion.name : ""),
-      "Category: " + (currentCategory || ""),
-      "",
-      lines.join("\n"),
-      "",
-      "Please confirm availability, final pricing and delivery details.",
-      "Thank you!"
-    ].join("\n");
-
-    const url = "https://wa.me/" + WHATSAPP_NUMBER +
-      "?text=" + encodeURIComponent(message);
-
-    window.open(url, "_blank", "noopener,noreferrer");
-  }
-
-  document.getElementById("close").addEventListener("click", closePanel);
-  backButton.addEventListener("click", goBack);
-  document.getElementById("checkout").addEventListener("click", checkout);
-
-  overlay.addEventListener("click", function (event) {
-    if (event.target === overlay) closePanel();
+    renderProducts();
   });
 
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") closePanel();
+  qty.addEventListener("change", function () {
+    if (cart.has(id)) {
+      const item = cart.get(id);
+      item.quantity = Math.max(1, parseInt(qty.value, 10) || 1);
+      cart.set(id, item);
+      updateCart();
+    }
   });
 
-  // Display a previously loaded catalogue immediately while the live feed refreshes.
-  try {
-    const cached = JSON.parse(
-      localStorage.getItem("blissGiftingsCatalogueCache") || "null"
-    );
-    if (cached && Array.isArray(cached.products) && cached.products.length) {
-      products = cached.products;
-      renderOccasions();
-      statusEl.textContent =
-        products.length + " products loaded. Updating catalogue…";
-    }
-  } catch (e) {
-    // Ignore invalid or unavailable cached data.
-  }
+  row.appendChild(qty);
+  row.appendChild(add);
+  body.appendChild(row);
+  card.appendChild(body);
+  grid.appendChild(card);
+ });
 
-  loadFeed();
+ panelContent.appendChild(grid);
+ updateCart();
+}
+
+function updateCart() {
+ const count = [...cart.values()].reduce(function (sum, item) {
+  return sum + item.quantity;
+ }, 0);
+
+ if (!count) {
+  cartbar.classList.remove("visible");
+  return;
+ }
+
+ cartbar.classList.add("visible");
+ cartSummary.innerHTML =
+  "<strong>" + count + (count === 1 ? " item" : " items") +
+  " selected</strong><br>Continue on WhatsApp to enquire.";
+}
+
+function checkout() {
+ if (!cart.size) return;
+
+ const lines = [...cart.values()].map(function (item) {
+  return "• " + item.name +
+   " — Qty: " + item.quantity +
+   (item.price ? " — Listed price: " + item.price : "");
+ });
+
+ const message = [
+  "Hello Bliss Giftings!",
+  "I would like to enquire about these wedding gifts:",
+  "",
+  "Occasion: " + (currentOccasion ? currentOccasion.name : ""),
+  "Category: " + (currentCategory || ""),
+  "",
+  lines.join("\n"),
+  "",
+  "Please confirm availability, final pricing and delivery details.",
+  "Thank you!"
+ ].join("\n");
+
+ const url = "https://wa.me/" + WHATSAPP_NUMBER +
+  "?text=" + encodeURIComponent(message);
+
+ window.open(url, "_blank", "noopener,noreferrer");
+}
+
+$("close").addEventListener("click", closePanel);
+backButton.addEventListener("click", goBack);
+$("checkout").addEventListener("click", checkout);
+
+overlay.addEventListener("click", function (event) {
+ if (event.target === overlay) closePanel();
+});
+
+document.addEventListener("keydown", function (event) {
+ if (event.key === "Escape") closePanel();
+});
+
+try {
+ const cached = JSON.parse(
+  localStorage.getItem(CACHE_KEY) || "null"
+ );
+
+ if (cached && Array.isArray(cached.products) && cached.products.length) {
+  products = cached.products;
+  renderOccasions();
+  statusEl.textContent =
+   products.length + " products loaded. Updating catalogue…";
+ }
+} catch (e) {}
+
+loadFeed();
 })();
 </script>
 </body>
 </html>
-
-     
+  
