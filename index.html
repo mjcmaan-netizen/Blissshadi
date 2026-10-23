@@ -239,8 +239,10 @@ footer strong { color: var(--gold-dark); }
 .product img {
   display: block;
   width: 100%;
+  height: auto;
   aspect-ratio: 4/4.3;
-  object-fit: cover;
+  min-height: 180px;
+  object-fit: contain;
   background: #eee4d7;
 }
 .product-body { padding: 12px; }
@@ -489,35 +491,11 @@ footer strong { color: var(--gold-dark); }
     });
   }
 
-  function imageURLs(filename) {
+  function imageURL(filename) {
     const name = String(filename || "").trim();
-    if (!name) return [];
-    if (/^https?:\/\//i.test(name)) return [name];
-
-    // Accept either a bare filename or a path copied from GitHub/Excel.
-    const clean = name.replace(/\\/g, "/").replace(/^\.\//, "").replace(/^\/+/, "");
-    const parts = clean.split("/").filter(Boolean).map(encodeURIComponent);
-    const encodedPath = parts.join("/");
-    const candidates = [];
-    if (clean.toLowerCase().startsWith("images/")) {
-      candidates.push("/" + encodedPath);
-      candidates.push("/" + encodedPath.replace(/^images\//i, ""));
-    } else if (clean.toLowerCase().startsWith("public/images/")) {
-      candidates.push("/" + encodedPath.replace(/^public\//i, ""));
-      candidates.push("/images/" + parts.slice(2).join("/"));
-    } else {
-      candidates.push("/images/" + encodedPath);
-      candidates.push("/" + encodedPath);
-    }
-    return Array.from(new Set(candidates));
-  }
-
-  function readProductField(product, names) {
-    for (const name of names) {
-      const value = product && product[name];
-      if (value != null && String(value).trim() !== "") return value;
-    }
-    return "";
+    if (!name) return "";
+    if (/^https?:\/\//i.test(name)) return name;
+    return "/images/" + name.split("/").map(encodeURIComponent).join("/");
   }
 
   function loadFeed() {
@@ -543,7 +521,7 @@ footer strong { color: var(--gold-dark); }
         statusEl.textContent =
           "We couldn't load the catalogue. Please refresh the page or try again shortly.";
       }
-    }, 15000);
+    }, 25000);
 
     window[callbackName] = function (data) {
       finish();
@@ -561,11 +539,15 @@ footer strong { color: var(--gold-dark); }
       products = data.products.filter(function (p) {
         return p && (p.name || p.productName || p["Product Name"]);
       });
+
       try {
         localStorage.setItem("blissGiftingsCatalogueCache", JSON.stringify({
-          savedAt: Date.now(), products: products
+          savedAt: Date.now(),
+          products: products
         }));
-      } catch (e) { /* Cache is optional; catalogue still works without it. */ }
+      } catch (e) {
+        // The live catalogue still works if browser storage is unavailable.
+      }
 
       renderOccasions();
       statusEl.textContent = products.length
@@ -715,34 +697,37 @@ footer strong { color: var(--gold-dark); }
     }
 
     list.forEach(function (p) {
-      const productName = String(readProductField(p, ["name", "productName", "Product Name"]) || "Wedding Gift");
+      const productName = String(p.name || p.productName || "Wedding Gift");
       const productId = String(p.id || p.sheet + "-" + productName);
-      const image = readProductField(p, ["image", "imageName", "imageFilename", "imageFileName", "imageUrl", "imageURL", "Image", "Image Name", "Image Filename", "Image File Name", "Photo"]);
-      const imageCandidates = imageURLs(image);
-      const selling = formatPrice(readProductField(p, ["sellingPrice", "price", "Selling Price", "Price"]));
-      const original = formatPrice(readProductField(p, ["originalPrice", "Original Price"]));
+      const imageValue = p.image || p.imageName || p.imageFilename ||
+        p.imageFileName || p.imageUrl || p.imageURL || p.Image ||
+        p["Image Name"] || p["Image Filename"] || p["Image File Name"] ||
+        p["Image URL"] || p.Photo || "";
+      const image = imageURL(imageValue);
+      const selling = formatPrice(p.sellingPrice || p.price);
+      const original = formatPrice(p.originalPrice);
       const quantity = cart.get(productId)?.quantity || 1;
       const isSelected = cart.has(productId);
-const card = document.createElement("article");
+
+      const card = document.createElement("article");
       card.className = "product";
 
       const img = document.createElement("img");
       img.alt = productName;
       img.loading = "lazy";
       img.decoding = "async";
-      img.style.width = "100%";
-      let imageAttempt = 0;
-      const imageOptions = imageCandidates.length ? imageCandidates : ["/images/placeholder.jpg"];
+      if (image) {
+        img.src = image;
+      } else {
+        img.alt = productName + " — image filename missing from catalogue";
+      }
       img.onerror = function () {
-        imageAttempt += 1;
-        if (imageAttempt < imageOptions.length) {
-          img.src = imageOptions[imageAttempt];
-        } else {
-          // Keep the existing product-card layout visible if a file is missing.
-          img.style.display = "none";
-        }
+        img.onerror = null;
+        img.removeAttribute("src");
+        img.alt = "Product image unavailable";
+        img.style.display = "block";
+        img.style.objectFit = "contain";
       };
-      img.src = imageOptions[0];
       card.appendChild(img);
 
       const body = document.createElement("div");
@@ -893,19 +878,25 @@ const card = document.createElement("article");
     if (event.key === "Escape") closePanel();
   });
 
-  // Show the last successful catalogue immediately, then refresh it in the background.
+  // Display a previously loaded catalogue immediately while the live feed refreshes.
   try {
-    const cached = JSON.parse(localStorage.getItem("blissGiftingsCatalogueCache") || "null");
+    const cached = JSON.parse(
+      localStorage.getItem("blissGiftingsCatalogueCache") || "null"
+    );
     if (cached && Array.isArray(cached.products) && cached.products.length) {
       products = cached.products;
       renderOccasions();
-      statusEl.textContent = products.length + " products loaded. Updating catalogue…";
+      statusEl.textContent =
+        products.length + " products loaded. Updating catalogue…";
     }
-  } catch (e) { /* Ignore invalid or unavailable browser cache. */ }
+  } catch (e) {
+    // Ignore invalid or unavailable cached data.
+  }
 
   loadFeed();
 })();
 </script>
 </body>
 </html>
-    
+
+     
