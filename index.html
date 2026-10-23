@@ -548,12 +548,15 @@ footer strong { color: var(--gold-dark); }
       .map(encodeURIComponent)
       .join("/");
 
-    return Array.from(new Set([
-      "/images/" + encoded,
-      "/public/images/" + encoded,
-      "/" + clean.split("/").map(encodeURIComponent).join("/")
-    ]));
-  }
+  
+  return Array.from(new Set([
+    "/Public/images/" + encoded,
+    "/public/images/" + encoded,
+    "/images/" + encoded,
+    "/" + clean.split("/").map(encodeURIComponent).join("/")
+  ]));
+}
+
 
   function loadFeed() {
     if (requestTimer) clearTimeout(requestTimer);
