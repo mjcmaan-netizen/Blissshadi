@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -397,10 +396,9 @@ footer strong { color: var(--gold-dark); }
 (function () {
   "use strict";
 
-  const FEED_URL =
-    https://script.google.com/macros/s/AKfycbwV7RrvUGVAmZ8X5D5gasGWcfvZItqcR6CNiZs3lgbKrx7ajxCMnfKKtY3I8KIHVh-bQA/exec";
-
+  const FEED_URL = "https://script.google.com/macros/s/AKfycbwV7RrvUGVAmZ8X5D5gasGWcfvZItqcR6CNiZs3lgbKrx7ajxCMnfKKtY3I8KIHVh-bQA/exec";
   const WHATSAPP_NUMBER = "919998920644";
+  const CACHE_KEY = "blissGiftingsCatalogueCache";
 
   const occasionList = [
     ["Baat Pakki", "💍", ["Baat Pakki"]],
@@ -420,23 +418,38 @@ footer strong { color: var(--gold-dark); }
     ["Reception", "✨", ["Reception"]]
   ];
 
-  const occasionsEl = document.getElementById("occasions");
-  const statusEl = document.getElementById("status");
-  const overlay = document.getElementById("overlay");
-  const panelTitle = document.getElementById("panel-title");
-  const stepLabel = document.getElementById("step-label");
-  const panelIntro = document.getElementById("panel-intro");
-  const panelContent = document.getElementById("panel-content");
-  const backButton = document.getElementById("back");
-  const cartbar = document.getElementById("cartbar");
-  const cartSummary = document.getElementById("cart-summary");
+  const $ = function (id) {
+    return document.getElementById(id);
+  };
+
+  const occasionsEl = $("occasions");
+  const statusEl = $("status");
+  const overlay = $("overlay");
+  const panelTitle = $("panel-title");
+  const stepLabel = $("step-label");
+  const panelIntro = $("panel-intro");
+  const panelContent = $("panel-content");
+  const backButton = $("back");
+  const cartbar = $("cartbar");
+  const cartSummary = $("cart-summary");
 
   let products = [];
   let currentOccasion = null;
   let currentCategory = null;
-  let view = "categories";
   let cart = new Map();
   let requestTimer = null;
+  let feedTimeout = null;
+
+  function field(product, names) {
+    for (const name of names) {
+      const value = product && product[name];
+      if (value !== undefined && value !== null &&
+          String(value).trim() !== "") {
+        return value;
+      }
+    }
+    return "";
+  }
 
   function normalize(value) {
     return String(value || "")
@@ -450,86 +463,101 @@ footer strong { color: var(--gold-dark); }
   }
 
   function occasionValues(product) {
-    const value = product.occasions || product.occasion || "";
-    return Array.isArray(value) ? value : String(value).split(/[,;|\n]+/);
+    const value = field(product, [
+      "occasions", "occasion", "Occasion"
+    ]);
+    return Array.isArray(value)
+      ? value
+      : String(value || "").split(/[,;|\n]+/);
   }
 
   function productMatchesOccasion(product, occasion) {
-    const values = occasionValues(product).map(normalize);
+    const values = occasionValues(product)
+      .map(normalize)
+      .filter(Boolean);
+
     return occasion.aliases.some(function (alias) {
       const target = normalize(alias);
+
       return values.some(function (value) {
         return value === target ||
           value.includes(target) ||
-          target.includes(value) && value.length > 3;
+          (target.includes(value) && value.length > 3);
       });
     });
+  }
+
+  function categoryOf(product) {
+    return String(field(product, [
+      "category", "Category", "sheet", "Sheet"
+    ]) || "Wedding Gifts").trim();
   }
 
   function formatPrice(value) {
     const raw = String(value || "").trim();
     if (!raw) return "";
+
     if (/[₹$€£]/.test(raw)) return raw;
-    const number = Number(raw.replace(/,/g, "").replace(/[^\d.]/g, ""));
+
+    const number = Number(
+      raw.replace(/,/g, "").replace(/[^\d.]/g, "")
+    );
+
     return Number.isFinite(number) && number > 0
       ? "₹" + number.toLocaleString("en-IN")
       : raw;
   }
 
-  function getPriceNumber(value) {
-    const number = Number(String(value || "")
-      .replace(/,/g, "").replace(/[^\d.]/g, ""));
-    return Number.isFinite(number) ? number : 0;
-  }
-
   function escapeHTML(value) {
-    return String(value == null ? "" : value).replace(/[&<>"']/g, function (ch) {
-      return {
-        "&": "&amp;", "<": "&lt;", ">": "&gt;",
-        '"': "&quot;", "'": "&#39;"
-      }[ch];
-    });
+    return String(value == null ? "" : value)
+      .replace(/[&<>"']/g, function (ch) {
+        return {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        }[ch];
+      });
   }
 
-  
-function imageURLs(filename) {
-  const name = String(filename || "").trim();
-  if (!name) return [];
+  function imageURLs(filename) {
+    const name = String(filename || "").trim();
+    if (!name) return [];
 
-  if (/^https?:\/\//i.test(name)) {
-    return [name];
+    if (/^https?:\/\//i.test(name)) {
+      return [name];
+    }
+
+    const clean = name
+      .replace(/\\/g, "/")
+      .replace(/^\.\//, "")
+      .replace(/^\/+/, "");
+
+    let file = clean;
+    const lower = clean.toLowerCase();
+
+    if (lower.startsWith("public/images/")) {
+      file = clean.slice("public/images/".length);
+    } else if (lower.startsWith("images/")) {
+      file = clean.slice("images/".length);
+    }
+
+    const encoded = file
+      .split("/")
+      .map(encodeURIComponent)
+      .join("/");
+
+    return Array.from(new Set([
+      "/images/" + encoded,
+      "/public/images/" + encoded,
+      "/" + clean.split("/").map(encodeURIComponent).join("/")
+    ]));
   }
-
-  const clean = name
-    .replace(/\\/g, "/")
-    .replace(/^\.\//, "")
-    .replace(/^\/+/, "");
-
-  const lower = clean.toLowerCase();
-  let file = clean;
-
-  if (lower.startsWith("public/images/")) {
-    file = clean.slice("public/images/".length);
-  } else if (lower.startsWith("images/")) {
-    file = clean.slice("images/".length);
-  }
-
-  const encodedFile = file
-    .split("/")
-    .map(encodeURIComponent)
-    .join("/");
-
-  return Array.from(new Set([
-    "/images/" + encodedFile,
-    "/Public/images/" + encodedFile,
-    "/public/images/" + encodedFile,
-    "/" + clean.split("/").map(encodeURIComponent).join("/")
-  ]));
-}
-  
 
   function loadFeed() {
     if (requestTimer) clearTimeout(requestTimer);
+    if (feedTimeout) clearTimeout(feedTimeout);
 
     const callbackName = "__blissFeed_" +
       Date.now() + "_" + Math.floor(Math.random() * 100000);
@@ -542,44 +570,54 @@ function imageURLs(filename) {
       finished = true;
       delete window[callbackName];
       script.remove();
-      clearTimeout(timeout);
+
+      if (feedTimeout) {
+        clearTimeout(feedTimeout);
+        feedTimeout = null;
+      }
     }
 
-    const timeout = setTimeout(function () {
+    feedTimeout = setTimeout(function () {
       finish();
+
       if (!products.length) {
         statusEl.textContent =
           "We couldn't load the catalogue. Please refresh the page or try again shortly.";
       }
-    }, 25000);
+    }, 20000);
 
     window[callbackName] = function (data) {
       finish();
 
       if (data && data.success === false) {
-        statusEl.textContent = "Catalogue error: " + (data.error || "Please try again.");
+        statusEl.textContent =
+          "Catalogue error: " + (data.error || "Please try again.");
         return;
       }
 
       if (!data || !Array.isArray(data.products)) {
-        statusEl.textContent = "The catalogue response could not be read.";
+        statusEl.textContent =
+          "The catalogue response could not be read. Please check the Apps Script response.";
         return;
       }
 
       products = data.products.filter(function (p) {
-        return p && (p.name || p.productName || p["Product Name"]);
+        return p && field(p, [
+          "name", "productName", "Product Name", "Name"
+        ]);
       });
 
       try {
-        localStorage.setItem("blissGiftingsCatalogueCache", JSON.stringify({
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
           savedAt: Date.now(),
           products: products
         }));
       } catch (e) {
-        // The live catalogue still works if browser storage is unavailable.
+        // The catalogue can still work when storage is unavailable.
       }
 
       renderOccasions();
+
       statusEl.textContent = products.length
         ? products.length + " products loaded from the live catalogue."
         : "No products were found. Please check the worksheet headers.";
@@ -589,13 +627,17 @@ function imageURLs(filename) {
 
     script.onerror = function () {
       finish();
+
       if (!products.length) {
         statusEl.textContent =
-          "Unable to connect to the catalogue. Please check your connection.";
+          "Unable to connect to the catalogue. Please check the Apps Script deployment and internet connection.";
       }
     };
 
-    script.src = FEED_URL + "?callback=" + callbackName;
+    script.src = FEED_URL +
+      (FEED_URL.indexOf("?") >= 0 ? "&" : "?") +
+      "callback=" + encodeURIComponent(callbackName);
+
     document.body.appendChild(script);
   }
 
@@ -615,11 +657,12 @@ function imageURLs(filename) {
 
       const button = document.createElement("button");
       button.className = "occasion";
+
       button.innerHTML =
         '<span class="symbol">' + occasion.icon + '</span>' +
         '<span class="name">' + escapeHTML(occasion.name) + '</span>' +
         '<span class="hint">' +
-          (count ? count + " products · Explore" : "Explore collection") +
+        (count ? count + " products · Explore" : "Explore collection") +
         '</span>';
 
       button.addEventListener("click", function () {
@@ -633,7 +676,6 @@ function imageURLs(filename) {
   function openOccasion(occasion) {
     currentOccasion = occasion;
     currentCategory = null;
-    view = "categories";
     cart.clear();
     updateCart();
     renderCategories();
@@ -647,8 +689,7 @@ function imageURLs(filename) {
   }
 
   function goBack() {
-    if (view === "products") {
-      view = "categories";
+    if (currentCategory !== null) {
       currentCategory = null;
       renderCategories();
     } else {
@@ -663,288 +704,337 @@ function imageURLs(filename) {
   }
 
   function renderCategories() {
-    view = "categories";
+    currentCategory = null;
     stepLabel.textContent = "Wedding collection";
     panelTitle.textContent = currentOccasion.name;
     panelIntro.textContent =
       "Choose a gift category to discover the products curated for this occasion.";
+
     backButton.hidden = true;
     cartbar.classList.remove("visible");
 
     const relevant = productsForOccasion();
+
     const categories = Array.from(new Set(
-      relevant.map(function (p) {
-        return String(p.category || p.sheet || "Wedding Gifts").trim();
-      }).filter(Boolean)
-    )).sort(function (a, b) { return a.localeCompare(b); });
+      relevant.map(categoryOf).filter(Boolean)
+    )).sort(function (a, b) {
+      return a.localeCompare(b);
+    });
 
     panelContent.innerHTML = "";
+
     const grid = document.createElement("div");
     grid.className = "category-grid";
 
     if (!categories.length) {
       grid.innerHTML =
-        '<div class="empty">No products are currently matched to this occasion. ' +
-        'Please check the Occasion column in your Google Sheet.</div>';
+        '<div class="empty">No products are currently matched to this occasion. Please check the Occasion column in your Google Sheet.</div>';
     }
 
     categories.forEach(function (category) {
       const count = relevant.filter(function (p) {
-        return String(p.category || p.sheet || "Wedding Gifts").trim() === category;
+        return categoryOf(p) === category;
       }).length;
 
       const button = document.createElement("button");
       button.className = "category";
       button.textContent = category + " (" + count + ")";
+
       button.addEventListener("click", function () {
         currentCategory = category;
         renderProducts();
       });
+
       grid.appendChild(button);
     });
 
     panelContent.appendChild(grid);
+    updateCart();
   }
 
   function renderProducts() {
-    view = "products";
     stepLabel.textContent = currentOccasion.name;
     panelTitle.textContent = currentCategory;
     panelIntro.textContent =
       "Explore the collection. Select quantities to prepare a WhatsApp enquiry.";
+
     backButton.hidden = false;
     panelContent.innerHTML = "";
 
     const list = productsForOccasion().filter(function (p) {
-      return String(p.category || p.sheet || "Wedding Gifts").trim() === currentCategory;
+      return categoryOf(p) === currentCategory;
     });
 
     const grid = document.createElement("div");
     grid.className = "product-grid";
 
     if (!list.length) {
-      grid.innerHTML = '<div class="empty">No products found in this category.</div>';
+      grid.innerHTML =
+        '<div class="empty">No products found in this category.</div>';
     }
 
-    list.forEach(function (p) {
-      const productName = String(p.name || p.productName || "Wedding Gift");
-      const productId = String(p.id || p.sheet + "-" + productName);
-      const imageValue = p.image || p.imageName || p.imageFilename ||
-        p.imageFileName || p.imageUrl || p.imageURL || p.Image ||
-        p["Image Name"] || p["Image Filename"] || p["Image File Name"] ||
-        p["Image URL"] || p.Photo || "";
-      const image = imageURL(imageValue);
-      const selling = formatPrice(p.sellingPrice || p.price);
-      const original = formatPrice(p.originalPrice);
-      const quantity = cart.get(productId)?.quantity || 1;
-      const isSelected = cart.has(productId);
+    list.forEach(function (p, index) {
+      const name = String(field(p, [
+        "name", "productName", "Product Name", "Name"
+      ]) || "Wedding Gift");
+
+      const id = String(field(p, [
+        "id", "ID", "sku", "SKU"
+      ]) || categoryOf(p) + "-" + name + "-" + index);
+
+      const imageValue = field(p, [
+        "image", "imageName", "imageFilename", "imageFileName",
+        "imageUrl", "imageURL", "Image", "Image Name",
+        "Image Filename", "Image File Name", "Image URL", "Photo"
+      ]);
+
+      const urls = imageURLs(imageValue);
+      const selling = formatPrice(field(p, [
+        "sellingPrice", "price", "Selling Price", "Price"
+      ]));
+            const original = formatPrice(field(p, [
+        "originalPrice", "Original Price"
+      ]));
+
+      const selectedItem = cart.get(id);
+      const quantity = selectedItem ? selectedItem.quantity : 1;
 
       const card = document.createElement("article");
       card.className = "product";
 
-      const img = document.createElement("img");
-      img.alt = productName;
-      img.loading = "lazy";
-      img.decoding = "async";
-      if (image) {
-        img.src = image;
-      } else {
-        img.alt = productName + " — image filename missing from catalogue";
+      const imageBox = document.createElement("div");
+      imageBox.style.minHeight = "180px";
+      imageBox.style.display = "flex";
+      imageBox.style.alignItems = "center";
+      imageBox.style.justifyContent = "center";
+      imageBox.style.background = "#eee4d7";
+      imageBox.style.color = "#786d63";
+      imageBox.style.font = "12px Arial, sans-serif";
+      imageBox.textContent = urls.length
+        ? ""
+        : "Image filename not provided";
+
+      if (urls.length) {
+        const img = document.createElement("img");
+        img.alt = name;
+        img.loading = "lazy";
+        img.decoding = "async";
+
+        let attempt = 0;
+
+        img.onerror = function () {
+          attempt++;
+
+          if (attempt < urls.length) {
+            img.src = urls[attempt];
+          } else {
+            img.remove();
+            imageBox.textContent = "Image unavailable";
+            imageBox.setAttribute(
+              "aria-label",
+              "Image unavailable for " + name
+            );
+          }
+        };
+
+        img.src = urls[0];
+        imageBox.appendChild(img);
       }
-         img.onerror = function () {
-    attempt++;
 
-    if (attempt < urls.length) {
-      img.src = urls[attempt];
-    } else {
-      img.remove();
+      card.appendChild(imageBox);
 
-      imageBox.textContent = "Image unavailable";
-      imageBox.setAttribute(
-        "aria-label",
-        "Image unavailable for " + name
-      );
-    }
-   };
+      const body = document.createElement("div");
+      body.className = "product-body";
 
-   img.src = urls[0];
-   imageBox.appendChild(img);
-  }
+      const title = document.createElement("h3");
+      title.textContent = name;
+      body.appendChild(title);
 
-  card.appendChild(imageBox);
+      const description = field(p, [
+        "description", "Description"
+      ]);
 
-  const body = document.createElement("div");
-  body.className = "product-body";
+      if (description) {
+        const d = document.createElement("p");
+        d.className = "description";
+        d.textContent = description;
+        body.appendChild(d);
+      }
 
-  const title = document.createElement("h3");
-  title.textContent = name;
-  body.appendChild(title);
+      const prices = document.createElement("div");
+      prices.className = "prices";
 
-  const description = field(p, ["description", "Description"]);
+      if (selling) {
+        const s = document.createElement("span");
+        s.className = "selling";
+        s.textContent = selling;
+        prices.appendChild(s);
+      }
 
-  if (description) {
-    const d = document.createElement("p");
-    d.className = "description";
-    d.textContent = description;
-    body.appendChild(d);
-  }
+      if (original && original !== selling) {
+        const old = document.createElement("span");
+        old.className = "original";
+        old.textContent = original;
+        prices.appendChild(old);
+      }
 
-  const prices = document.createElement("div");
-  prices.className = "prices";
+      body.appendChild(prices);
 
-  if (selling) {
-    const s = document.createElement("span");
-    s.className = "selling";
-    s.textContent = selling;
-    prices.appendChild(s);
-  }
+      const details = [];
+      const moq = field(p, [
+        "moq", "MOQ", "Minimum Order Quantity"
+      ]);
+      const shipping = field(p, [
+        "shipping", "Shipping"
+      ]);
 
-  if (original && original !== selling) {
-    const old = document.createElement("span");
-    old.className = "original";
-    old.textContent = original;
-    prices.appendChild(old);
-  }
+      if (moq) details.push("Minimum order: " + moq);
+      if (shipping) details.push(shipping);
 
-  body.appendChild(prices);
+      if (details.length) {
+        const meta = document.createElement("div");
+        meta.className = "product-meta";
+        meta.textContent = details.join(" · ");
+        body.appendChild(meta);
+      }
 
-  const details = [];
-  const moq = field(p, ["moq", "MOQ", "Minimum Order Quantity"]);
-  const shipping = field(p, ["shipping", "Shipping"]);
+      const row = document.createElement("div");
+      row.className = "order-row";
 
-  if (moq) details.push("Minimum order: " + moq);
-  if (shipping) details.push(shipping);
+      const qty = document.createElement("input");
+      qty.className = "qty";
+      qty.type = "number";
+      qty.min = "1";
+      qty.step = "1";
+      qty.value = quantity;
+      qty.setAttribute("aria-label", "Quantity for " + name);
 
-  if (details.length) {
-    const meta = document.createElement("div");
-    meta.className = "product-meta";
-    meta.textContent = details.join(" · ");
-    body.appendChild(meta);
-  }
+      const add = document.createElement("button");
+      add.className = "add" + (selectedItem ? " selected" : "");
+      add.textContent = selectedItem
+        ? "✓ Added"
+        : "Add to enquiry";
 
-  const row = document.createElement("div");
-  row.className = "order-row";
+      add.addEventListener("click", function () {
+        if (cart.has(id)) {
+          cart.delete(id);
+        } else {
+          cart.set(id, {
+            id: id,
+            name: name,
+            price: selling,
+            quantity: Math.max(
+              1, parseInt(qty.value, 10) || 1
+            )
+          });
+        }
 
-  const qty = document.createElement("input");
-  qty.className = "qty";
-  qty.type = "number";
-  qty.min = "1";
-  qty.step = "1";
-  qty.value = qtyValue;
-  qty.setAttribute("aria-label", "Quantity for " + name);
-
-  const add = document.createElement("button");
-  add.className = "add" + (selected ? " selected" : "");
-  add.textContent = selected ? "✓ Added" : "Add to enquiry";
-
-  add.addEventListener("click", function () {
-    if (cart.has(id)) {
-      cart.delete(id);
-    } else {
-      cart.set(id, {
-        id: id,
-        name: name,
-        price: selling,
-        quantity: Math.max(1, parseInt(qty.value, 10) || 1)
+        updateCart();
+        renderProducts();
       });
-    }
 
+      qty.addEventListener("change", function () {
+        if (cart.has(id)) {
+          const item = cart.get(id);
+          item.quantity = Math.max(
+            1, parseInt(qty.value, 10) || 1
+          );
+          cart.set(id, item);
+          updateCart();
+        }
+      });
+
+      row.appendChild(qty);
+      row.appendChild(add);
+      body.appendChild(row);
+      card.appendChild(body);
+      grid.appendChild(card);
+    });
+
+    panelContent.appendChild(grid);
     updateCart();
-    renderProducts();
-  });
+  }
 
-  qty.addEventListener("change", function () {
-    if (cart.has(id)) {
-      const item = cart.get(id);
-      item.quantity = Math.max(1, parseInt(qty.value, 10) || 1);
-      cart.set(id, item);
-      updateCart();
+  function updateCart() {
+    const count = Array.from(cart.values()).reduce(
+      function (sum, item) {
+        return sum + item.quantity;
+      }, 0
+    );
+
+    if (!count) {
+      cartbar.classList.remove("visible");
+      cartSummary.innerHTML = "";
+      return;
     }
+
+    cartbar.classList.add("visible");
+    cartSummary.innerHTML =
+      "<strong>" + count +
+      (count === 1 ? " item" : " items") +
+      " selected</strong><br>Continue on WhatsApp to enquire.";
+  }
+
+  function checkout() {
+    if (!cart.size) return;
+
+    const lines = Array.from(cart.values()).map(function (item) {
+      return "• " + item.name +
+        " — Qty: " + item.quantity +
+        (item.price ? " — Listed price: " + item.price : "");
+    });
+
+    const message = [
+      "Hello Bliss Giftings!",
+      "I would like to enquire about these wedding gifts:",
+      "",
+      "Occasion: " + (currentOccasion ? currentOccasion.name : ""),
+      "Category: " + (currentCategory || ""),
+      "",
+      lines.join("\n"),
+      "",
+      "Please confirm availability, final pricing and delivery details.",
+      "Thank you!"
+    ].join("\n");
+
+    window.open(
+      "https://wa.me/" + WHATSAPP_NUMBER +
+      "?text=" + encodeURIComponent(message),
+      "_blank",
+      "noopener,noreferrer"
+    );
+  }
+
+  $("close").addEventListener("click", closePanel);
+  backButton.addEventListener("click", goBack);
+  $("checkout").addEventListener("click", checkout);
+
+  overlay.addEventListener("click", function (event) {
+    if (event.target === overlay) closePanel();
   });
 
-  row.appendChild(qty);
-  row.appendChild(add);
-  body.appendChild(row);
-  card.appendChild(body);
-  grid.appendChild(card);
- });
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") closePanel();
+  });
 
- panelContent.appendChild(grid);
- updateCart();
-}
+  try {
+    const cached = JSON.parse(
+      localStorage.getItem(CACHE_KEY) || "null"
+    );
 
-function updateCart() {
- const count = [...cart.values()].reduce(function (sum, item) {
-  return sum + item.quantity;
- }, 0);
+    if (cached && Array.isArray(cached.products) &&
+        cached.products.length) {
+      products = cached.products;
+      renderOccasions();
+      statusEl.textContent =
+        products.length + " products loaded. Updating catalogue…";
+    }
+  } catch (e) {
+    // Ignore invalid or unavailable browser storage.
+  }
 
- if (!count) {
-  cartbar.classList.remove("visible");
-  return;
- }
-
- cartbar.classList.add("visible");
- cartSummary.innerHTML =
-  "<strong>" + count + (count === 1 ? " item" : " items") +
-  " selected</strong><br>Continue on WhatsApp to enquire.";
-}
-
-function checkout() {
- if (!cart.size) return;
-
- const lines = [...cart.values()].map(function (item) {
-  return "• " + item.name +
-   " — Qty: " + item.quantity +
-   (item.price ? " — Listed price: " + item.price : "");
- });
-
- const message = [
-  "Hello Bliss Giftings!",
-  "I would like to enquire about these wedding gifts:",
-  "",
-  "Occasion: " + (currentOccasion ? currentOccasion.name : ""),
-  "Category: " + (currentCategory || ""),
-  "",
-  lines.join("\n"),
-  "",
-  "Please confirm availability, final pricing and delivery details.",
-  "Thank you!"
- ].join("\n");
-
- const url = "https://wa.me/" + WHATSAPP_NUMBER +
-  "?text=" + encodeURIComponent(message);
-
- window.open(url, "_blank", "noopener,noreferrer");
-}
-
-$("close").addEventListener("click", closePanel);
-backButton.addEventListener("click", goBack);
-$("checkout").addEventListener("click", checkout);
-
-overlay.addEventListener("click", function (event) {
- if (event.target === overlay) closePanel();
-});
-
-document.addEventListener("keydown", function (event) {
- if (event.key === "Escape") closePanel();
-});
-
-try {
- const cached = JSON.parse(
-  localStorage.getItem(CACHE_KEY) || "null"
- );
-
- if (cached && Array.isArray(cached.products) && cached.products.length) {
-  products = cached.products;
-  renderOccasions();
-  statusEl.textContent =
-   products.length + " products loaded. Updating catalogue…";
- }
-} catch (e) {}
-
-loadFeed();
+  loadFeed();
 })();
 </script>
 </body>
 </html>
-  
