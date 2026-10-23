@@ -491,12 +491,42 @@ footer strong { color: var(--gold-dark); }
     });
   }
 
-  function imageURL(filename) {
-    const name = String(filename || "").trim();
-    if (!name) return "";
-    if (/^https?:\/\//i.test(name)) return name;
-    return "/images/" + name.split("/").map(encodeURIComponent).join("/");
+  
+function imageURLs(filename) {
+  const name = String(filename || "").trim();
+  if (!name) return [];
+
+  if (/^https?:\/\//i.test(name)) {
+    return [name];
   }
+
+  const clean = name
+    .replace(/\\/g, "/")
+    .replace(/^\.\//, "")
+    .replace(/^\/+/, "");
+
+  const lower = clean.toLowerCase();
+  let file = clean;
+
+  if (lower.startsWith("public/images/")) {
+    file = clean.slice("public/images/".length);
+  } else if (lower.startsWith("images/")) {
+    file = clean.slice("images/".length);
+  }
+
+  const encodedFile = file
+    .split("/")
+    .map(encodeURIComponent)
+    .join("/");
+
+  return Array.from(new Set([
+    "/images/" + encodedFile,
+    "/Public/images/" + encodedFile,
+    "/public/images/" + encodedFile,
+    "/" + clean.split("/").map(encodeURIComponent).join("/")
+  ]));
+}
+  
 
   function loadFeed() {
     if (requestTimer) clearTimeout(requestTimer);
